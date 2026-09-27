@@ -4,236 +4,340 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan EMI Calculator Pro</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='url(%23gradient)'/%3E%3Cpath d='M16 8L20 12L16 16L12 12L16 8Z' fill='white'/%3E%3Cpath d='M16 16L20 20L16 24L12 20L16 16Z' fill='white' opacity='0.7'/%3E%3Cdefs%3E%3ClinearGradient id='gradient' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%23667eea'/%3E%3Cstop offset='100%25' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
+    <meta name="description" content="Work out your loan EMI and see how extra payments cut your interest and close your loan sooner.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0%25' stop-color='%23667eea'/%3E%3Cstop offset='100%25' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 8L20 12L16 16L12 12L16 8Z' fill='white'/%3E%3Cpath d='M16 16L20 20L16 24L12 20L16 16Z' fill='white' opacity='0.7'/%3E%3C/svg%3E">
+    <script>
+        // Apply a saved light/dark choice before the page paints
+        try {
+            const savedTheme = localStorage.getItem('loanCalcTheme');
+            if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+        } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container">
+    <div class="app">
         <!-- Header -->
         <header class="header">
-            <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
-                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white"/>
-                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.7"/>
+            <div class="brand">
+                <svg class="brand-mark" width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                     <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                        <linearGradient id="brandGradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                             <stop offset="0%" stop-color="#667eea"/>
                             <stop offset="100%" stop-color="#764ba2"/>
                         </linearGradient>
                     </defs>
+                    <rect width="32" height="32" rx="8" fill="url(#brandGradient)"/>
+                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white"/>
+                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.7"/>
                 </svg>
-                <h1>Loan Calculator Pro</h1>
+                <div class="brand-text">
+                    <h1 class="brand-name">Loan Calculator Pro</h1>
+                    <p class="brand-tagline">See your EMI and how extra payments save you money</p>
+                </div>
             </div>
             <div class="header-actions">
-                <button class="btn-icon" id="resetBtn" title="Reset All">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="btn-ghost icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">
+                    <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                </button>
+                <button class="btn-ghost" id="resetBtn" type="button" title="Reset all fields" aria-label="Reset all fields">
+                    <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                         <path d="M3 3v5h5"/>
                     </svg>
+                    <span class="btn-label">Reset</span>
                 </button>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Left Panel - Input -->
-            <div class="left-panel">
-                <div class="card">
-                    <h2 class="card-title">Basic Loan Details</h2>
-                    
-                    <div class="form-group">
-                        <label for="loanAmount">Loan Amount</label>
+        <main class="layout">
+            <!-- Inputs -->
+            <aside class="inputs" aria-label="Loan inputs">
+                <section class="card">
+                    <h2 class="card-title">Loan details</h2>
+
+                    <div class="field">
+                        <label for="loanAmount">Loan amount</label>
                         <div class="input-wrapper">
                             <span class="input-prefix">₹</span>
-                            <input type="text" id="loanAmount" value="6000000" class="input-field">
+                            <input type="text" id="loanAmount" value="60,00,000" class="input-field" inputmode="numeric" autocomplete="off">
                         </div>
-                        <div class="input-helper">Principal amount you want to borrow</div>
+                        <div class="input-helper">How much you are borrowing<span class="amount-words" id="loanAmountWords"></span></div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="interestRate">Annual Interest Rate</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="interestRate" value="7.75" step="0.01" class="input-field">
-                            <span class="input-suffix">%</span>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="interestRate">Interest rate</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="interestRate" value="7.75" step="0.01" class="input-field" inputmode="decimal">
+                                <span class="input-suffix">% a year</span>
+                            </div>
                         </div>
-                        <div class="input-helper">Interest rate per annum</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="loanTenure">Loan Tenure</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="loanTenure" value="30" min="1" max="50" class="input-field">
-                            <span class="input-suffix">years</span>
+                        <div class="field">
+                            <label for="loanTenure">Loan tenure</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="loanTenure" value="30" min="1" max="50" class="input-field" inputmode="numeric">
+                                <span class="input-suffix">years</span>
+                            </div>
                         </div>
-                        <div class="input-helper">Total duration of the loan</div>
                     </div>
-                </div>
+                </section>
 
-                <div class="card">
-                    <h2 class="card-title">Extra Payment Strategy</h2>
-                    
-                    <div class="strategy-tabs">
-                        <button class="tab-btn active" data-tab="fixed">Fixed Monthly Extra</button>
-                        <button class="tab-btn" data-tab="custom">Custom Schedule</button>
+                <section class="card">
+                    <h2 class="card-title">Extra payments</h2>
+                    <p class="card-subtitle">Paying a little more than your EMI cuts the interest and closes the loan sooner.</p>
+
+                    <div class="segmented strategy-tabs" role="group" aria-label="Type of extra payment">
+                        <button class="tab-btn active" data-tab="fixed" type="button" aria-pressed="true">Same every month</button>
+                        <button class="tab-btn" data-tab="custom" type="button" aria-pressed="false">Custom schedule</button>
                     </div>
 
                     <!-- Fixed Monthly Extra Tab -->
                     <div class="tab-content active" id="fixedTab">
-                        <div class="form-group">
-                            <label for="extraMonthly">Extra Payment Per Month</label>
+                        <div class="field">
+                            <label for="extraMonthly">Extra amount each month</label>
                             <div class="input-wrapper">
                                 <span class="input-prefix">₹</span>
-                                <input type="text" id="extraMonthly" value="0" class="input-field">
+                                <input type="text" id="extraMonthly" value="0" class="input-field" inputmode="numeric" autocomplete="off">
                             </div>
-                            <div class="input-helper">Additional amount to pay each month</div>
+                            <div class="input-helper">Paid on top of your EMI. Leave it at 0 for no extra payments.</div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="extraDuration">Pay Extra For</label>
+                        <div class="field">
+                            <label for="extraDuration">For how many months?</label>
                             <div class="input-wrapper">
-                                <input type="number" id="extraDuration" value="0" min="0" class="input-field">
+                                <input type="number" id="extraDuration" value="0" min="0" class="input-field" inputmode="numeric">
                                 <span class="input-suffix">months</span>
                             </div>
-                            <div class="input-helper">Number of months to make extra payments (0 = entire loan)</div>
+                            <div class="input-helper">Enter 0 to keep paying extra until the loan ends.</div>
                         </div>
                     </div>
 
                     <!-- Custom Schedule Tab -->
                     <div class="tab-content" id="customTab">
-                        <div class="custom-schedule">
-                            <p class="helper-text">Add multiple extra payment periods:</p>
-                            <div id="scheduleList" class="schedule-list">
-                                <!-- Dynamic schedule items will be added here -->
-                            </div>
-                            <button class="btn-secondary" id="addScheduleBtn">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"/>
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
-                                </svg>
-                                Add Payment Period
-                            </button>
+                        <p class="helper-text">Plan different extra amounts for different periods, for example after a bonus or a salary hike.</p>
+                        <div id="scheduleList" class="schedule-list">
+                            <!-- Dynamic schedule items will be added here -->
                         </div>
+                        <button class="btn-secondary" id="addScheduleBtn" type="button">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add a period
+                        </button>
+                    </div>
+                </section>
+
+                <div class="calc-bar">
+                    <button class="btn-primary" id="calculateBtn" type="button">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        Calculate
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Results -->
+            <section class="results" id="results" aria-label="Results">
+                <!-- Headline -->
+                <div class="hero">
+                    <div class="hero-top">
+                        <div class="hero-label">Your monthly EMI</div>
+                        <span class="stale-pill" id="stalePill" hidden>Inputs changed · press Calculate</span>
+                    </div>
+                    <div class="hero-value" id="standardEMI">₹0</div>
+                    <div class="hero-meta" id="heroMeta"></div>
+                    <div class="hero-insight">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 18h6"/><path d="M10 22h4"/>
+                            <path d="M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/>
+                        </svg>
+                        <p id="heroInsight" aria-live="polite"></p>
                     </div>
                 </div>
 
-                <button class="btn-primary" id="calculateBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                    </svg>
-                    Calculate Loan
-                </button>
-            </div>
-
-            <!-- Right Panel - Results -->
-            <div class="right-panel">
-                <!-- Summary Cards -->
-                <div class="summary-grid">
-                    <div class="summary-card standard">
-                        <div class="summary-label">Standard EMI</div>
-                        <div class="summary-value" id="standardEMI">₹0</div>
-                        <div class="summary-sublabel">Monthly Payment</div>
+                <!-- Key numbers -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon kpi-icon-save" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/>
+                                <path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-label">Interest saved</div>
+                        <div class="kpi-value kpi-value-save" id="totalSavings">₹0</div>
+                        <div class="kpi-desc" id="totalSavingsDesc"></div>
                     </div>
-                    <div class="summary-card proposed">
-                        <div class="summary-label">Your EMI (with extra)</div>
-                        <div class="summary-value" id="proposedEMI">₹0</div>
-                        <div class="summary-sublabel">Average Monthly</div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-label">Loan-free sooner by</div>
+                        <div class="kpi-value" id="timeSaved">0 months</div>
+                        <div class="kpi-desc" id="timeSavedDesc"></div>
                     </div>
-                    <div class="summary-card savings">
-                        <div class="summary-label">Total Savings</div>
-                        <div class="summary-value" id="totalSavings">₹0</div>
-                        <div class="summary-sublabel">Interest + Time</div>
-                    </div>
-                    <div class="summary-card time">
-                        <div class="summary-label">Time Saved</div>
-                        <div class="summary-value" id="timeSaved">0 yrs</div>
-                        <div class="summary-sublabel">Loan Completion</div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-label">Average monthly payment</div>
+                        <div class="kpi-value" id="proposedEMI">₹0</div>
+                        <div class="kpi-desc" id="proposedEMIDesc"></div>
                     </div>
                 </div>
 
-                <!-- Comparison Chart -->
-                <div class="card chart-card">
-                    <h2 class="card-title">Loan Comparison</h2>
-                    <div class="comparison-bars">
-                        <div class="comparison-item">
-                            <div class="comparison-label">
-                                <span>Standard Loan</span>
-                                <span class="comparison-value" id="standardTotal">₹0</span>
-                            </div>
-                            <div class="comparison-bar-bg">
-                                <div class="comparison-bar standard-bar" id="standardBar" style="width: 100%">
-                                    <span class="bar-label" id="standardDuration">0 months</span>
-                                </div>
-                            </div>
+                <!-- Where your money goes -->
+                <section class="card">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title">Where your money goes</h2>
+                            <p class="card-subtitle">Everything you pay back: the loan amount plus the bank's interest.</p>
                         </div>
-                        <div class="comparison-item">
-                            <div class="comparison-label">
-                                <span>With Extra Payments</span>
-                                <span class="comparison-value" id="proposedTotal">₹0</span>
-                            </div>
-                            <div class="comparison-bar-bg">
-                                <div class="comparison-bar proposed-bar" id="proposedBar" style="width: 70%">
-                                    <span class="bar-label" id="proposedDuration">0 months</span>
-                                </div>
-                            </div>
+                        <div class="legend">
+                            <span class="legend-item"><span class="swatch swatch-principal"></span>Loan amount</span>
+                            <span class="legend-item"><span class="swatch swatch-interest"></span>Interest</span>
                         </div>
                     </div>
-                </div>
+                    <div class="money-rows">
+                        <div class="money-row">
+                            <div class="money-row-head">
+                                <span class="money-row-name">EMI only</span>
+                                <span class="money-row-duration" id="standardDuration"></span>
+                                <span class="money-row-total"><span class="money-row-total-label">Total</span> <span id="standardTotal">₹0</span></span>
+                            </div>
+                            <div class="money-bar" id="standardBar" data-scenario="EMI only">
+                                <span class="seg seg-principal" tabindex="0"></span>
+                                <span class="seg seg-interest" tabindex="0"></span>
+                            </div>
+                            <div class="money-row-note" id="standardNote"></div>
+                        </div>
+                        <div class="money-row">
+                            <div class="money-row-head">
+                                <span class="money-row-name">With extra payments</span>
+                                <span class="money-row-duration" id="proposedDuration"></span>
+                                <span class="money-row-total"><span class="money-row-total-label">Total</span> <span id="proposedTotal">₹0</span></span>
+                            </div>
+                            <div class="money-bar" id="proposedBar" data-scenario="With extra payments">
+                                <span class="seg seg-principal" tabindex="0"></span>
+                                <span class="seg seg-interest" tabindex="0"></span>
+                            </div>
+                            <div class="money-row-note" id="proposedNote"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Balance over time -->
+                <section class="card">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title">How your loan balance goes down</h2>
+                            <p class="card-subtitle" id="balanceSubtitle">The amount you still owe over time.</p>
+                        </div>
+                        <div class="card-head-side">
+                            <div class="legend" id="balanceLegend">
+                                <span class="legend-item"><span class="line-key line-key-extra"></span>With extra payments</span>
+                                <span class="legend-item"><span class="line-key line-key-emi"></span>EMI only</span>
+                            </div>
+                            <button class="btn-link" id="balanceTableToggle" type="button" aria-pressed="false">View as table</button>
+                        </div>
+                    </div>
+                    <div class="balance-chart" id="balanceChart" tabindex="0" role="img" aria-label="Chart of your loan balance over time"></div>
+                    <div class="table-container balance-table" id="balanceTable" hidden>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th class="col-extra">With extra payments</th>
+                                    <th>EMI only</th>
+                                </tr>
+                            </thead>
+                            <tbody id="balanceTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
 
                 <!-- Detailed Breakdown -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Detailed Breakdown</h2>
-                        <div class="view-toggle">
-                            <button class="toggle-btn active" data-view="summary">Summary</button>
-                            <button class="toggle-btn" data-view="yearly">Yearly</button>
-                            <button class="toggle-btn" data-view="monthly">Monthly</button>
+                <section class="card">
+                    <div class="card-head card-head-row">
+                        <h2 class="card-title">Detailed breakdown</h2>
+                        <div class="segmented view-toggle" role="group" aria-label="Breakdown view">
+                            <button class="toggle-btn active" data-view="summary" type="button" aria-pressed="true">Summary</button>
+                            <button class="toggle-btn" data-view="yearly" type="button" aria-pressed="false">Yearly</button>
+                            <button class="toggle-btn" data-view="monthly" type="button" aria-pressed="false">Monthly</button>
                         </div>
                     </div>
-                    
+
                     <!-- Summary View -->
                     <div class="breakdown-view active" id="summaryView">
                         <div class="breakdown-grid">
                             <div class="breakdown-item">
-                                <div class="breakdown-label">Standard Loan Duration</div>
+                                <span class="tag tag-emi">EMI only</span>
+                                <div class="breakdown-label">Time to repay the loan</div>
                                 <div class="breakdown-value" id="summaryStandardDuration">0 months</div>
+                                <p class="breakdown-desc">If you pay only your regular EMI every month.</p>
                             </div>
                             <div class="breakdown-item">
-                                <div class="breakdown-label">With Extra Payments</div>
+                                <span class="tag tag-extra">With extra payments</span>
+                                <div class="breakdown-label">Time to repay the loan</div>
                                 <div class="breakdown-value" id="summaryProposedDuration">0 months</div>
+                                <p class="breakdown-desc" id="summaryProposedDurationDesc">If you also pay the extra amounts you entered.</p>
                             </div>
                             <div class="breakdown-item">
-                                <div class="breakdown-label">Total Interest (Standard)</div>
+                                <span class="tag tag-emi">EMI only</span>
+                                <div class="breakdown-label">Total interest you pay</div>
                                 <div class="breakdown-value" id="summaryStandardInterest">₹0</div>
+                                <p class="breakdown-desc">What the bank charges you on top of the loan amount.</p>
                             </div>
                             <div class="breakdown-item">
-                                <div class="breakdown-label">Total Interest (With Extra)</div>
+                                <span class="tag tag-extra">With extra payments</span>
+                                <div class="breakdown-label">Total interest you pay</div>
                                 <div class="breakdown-value" id="summaryProposedInterest">₹0</div>
+                                <p class="breakdown-desc" id="summaryProposedInterestDesc">Lower, because extra payments shrink your loan faster.</p>
                             </div>
                             <div class="breakdown-item highlight">
-                                <div class="breakdown-label">Interest Saved</div>
+                                <span class="tag tag-save">Your savings</span>
+                                <div class="breakdown-label">Interest you save</div>
                                 <div class="breakdown-value" id="summaryInterestSaved">₹0</div>
+                                <p class="breakdown-desc" id="summaryInterestSavedDesc">The difference between the two interest amounts above.</p>
                             </div>
                             <div class="breakdown-item highlight">
-                                <div class="breakdown-label">Time Saved</div>
+                                <span class="tag tag-save">Your savings</span>
+                                <div class="breakdown-label">You finish sooner by</div>
                                 <div class="breakdown-value" id="summaryTimeSaved">0 months</div>
+                                <p class="breakdown-desc" id="summaryTimeSavedDesc"></p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Yearly View -->
                     <div class="breakdown-view" id="yearlyView">
+                        <p class="view-caption" id="yearlyCaption"></p>
                         <div class="table-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Year</th>
-                                        <th>Opening Balance</th>
-                                        <th>Total Paid</th>
+                                        <th>Balance at start</th>
+                                        <th>Paid in the year</th>
                                         <th>Interest</th>
-                                        <th>Principal</th>
-                                        <th>Closing Balance</th>
+                                        <th>Principal repaid</th>
+                                        <th>Balance at end</th>
                                     </tr>
                                 </thead>
                                 <tbody id="yearlyTableBody">
@@ -247,16 +351,17 @@
 
                     <!-- Monthly View -->
                     <div class="breakdown-view" id="monthlyView">
+                        <p class="view-caption" id="monthlyCaption"></p>
                         <div class="table-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
                                         <th>EMI</th>
-                                        <th>Extra Payment</th>
+                                        <th>Extra paid</th>
                                         <th>Interest</th>
-                                        <th>Principal</th>
-                                        <th>Balance</th>
+                                        <th>Principal repaid</th>
+                                        <th>Balance left</th>
                                     </tr>
                                 </thead>
                                 <tbody id="monthlyTableBody">
@@ -267,35 +372,50 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
+
+                <p class="disclaimer">These figures are estimates. Your lender's actual numbers may differ slightly.</p>
+            </section>
         </main>
     </div>
 
+    <!-- Chart tooltip -->
+    <div class="viz-tooltip" id="vizTooltip" hidden></div>
+
     <!-- Add Schedule Modal -->
-    <div class="modal" id="scheduleModal">
+    <div class="modal" id="scheduleModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Add Extra Payment Period</h3>
-                <button class="modal-close" id="closeModal">&times;</button>
+                <h3 id="modalTitle">Add an extra payment period</h3>
+                <button class="modal-close" id="closeModal" type="button" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Start Month</label>
-                    <input type="number" id="modalStartMonth" value="1" min="1" class="input-field">
+                <p class="modal-intro">Pay the same extra amount every month between two months. For example, ₹20,000 from month 1 to month 60 covers the first 5 years.</p>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="modalStartMonth">From month</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="modalStartMonth" value="1" min="1" class="input-field" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="modalEndMonth">To month</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="modalEndMonth" value="12" min="1" class="input-field" inputmode="numeric">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>End Month</label>
-                    <input type="number" id="modalEndMonth" value="12" min="1" class="input-field">
-                </div>
-                <div class="form-group">
-                    <label>Extra Amount (₹)</label>
-                    <input type="text" id="modalExtraAmount" value="10000" class="input-field">
+                <div class="field">
+                    <label for="modalExtraAmount">Extra amount each month</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="text" id="modalExtraAmount" value="10000" class="input-field" inputmode="numeric" autocomplete="off">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" id="modalCancel">Cancel</button>
-                <button class="btn-primary" id="modalAdd">Add Period</button>
+                <button class="btn-secondary" id="modalCancel" type="button">Cancel</button>
+                <button class="btn-primary" id="modalAdd" type="button">Add period</button>
             </div>
         </div>
     </div>
